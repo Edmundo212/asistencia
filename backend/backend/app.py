@@ -1,13 +1,12 @@
 import sys
 import os
-
-# Add project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from config import SECRET_KEY, DEBUG
 from routes.recognition import recognition_bp
+
+# Add project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Serve frontend files by setting the static folder and URL path
 app = Flask(__name__, static_folder='../frontend', static_url_path='')

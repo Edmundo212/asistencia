@@ -6,37 +6,77 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #74b9ff, #0984e3);
-    color: #333;
+    background: linear-gradient(135deg, #011c38, #014477);
+    color: #500000;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .container {
+    width: 100%;
     max-width: 800px;
-    margin: 0 auto;
-    background: white;
+    background: rgb(255, 255, 255);
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(192, 0, 0, 0.2);
     text-align: center;
 }
 
 h1 {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    color: #1c4768;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+}
+
+.tab-btn.active {
     color: #0984e3;
+    border-bottom-color: #0984e3;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }
 
 .video-container {
-    margin-bottom: 20px;
+    margin: 20px 0;
+    position: relative;
 }
 
-#video {
+#video-recognize, #video-register {
     border: 3px solid #0984e3;
     border-radius: 10px;
     background: #000;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
 }
 
-#capture-btn {
+#capture-btn, #register-btn {
     margin-top: 15px;
     padding: 12px 24px;
     font-size: 18px;
@@ -48,8 +88,25 @@ h1 {
     transition: background 0.3s;
 }
 
-#capture-btn:hover {
+#capture-btn:hover, #register-btn:hover {
     background: #074c7e;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.register-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
 }
 
 #result-container {
@@ -70,10 +127,26 @@ h1 {
     display: none !important;
 }
 
-#error {
-    color: #e74c3c;
+#error, #register-feedback {
     font-weight: bold;
     margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+#error {
+    color: #e74c3c;
+    background-color: #fdd;
+}
+
+#register-feedback.success {
+    color: #27ae60;
+    background-color: #e0f8e9;
+}
+
+#register-feedback.error {
+    color: #e74c3c;
+    background-color: #fdd;
 }
 
 #loading {

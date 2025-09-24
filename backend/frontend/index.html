@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconocimiento Facial</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Reconocimiento Facial en Tiempo Real</h1>
+        <div class="video-container">
+            <video id="video" width="640" height="480" autoplay muted></video>
+            <button id="capture-btn">📷 Capturar y Analizar</button>
+        </div>
+        <div id="result-container" class="hidden">
+            <h2>Resultado:</h2>
+            <p id="face-count">Rostros detectados: 0</p>
+            <img id="result-image" src="" alt="Imagen con detecciones">
+        </div>
+        <div id="loading" class="hidden">Procesando... por favor espera.</div>
+        <div id="error" class="hidden error"></div>
+    </div>
+    <script src="scripts/app.js"></script>
+</body>
+</html>

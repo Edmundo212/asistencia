@@ -8,16 +8,44 @@
 </head>
 <body>
     <div class="container">
-        <h1>📸 Reconocimiento Facial en Tiempo Real</h1>
-        <div class="video-container">
-            <video id="video" width="640" height="480" autoplay muted></video>
-            <button id="capture-btn">📷 Capturar y Analizar</button>
+        <h1>📸 Sistema de Reconocimiento Facial</h1>
+
+        <div class="tabs">
+            <button id="tab-recognize" class="tab-btn active">Reconocimiento</button>
+            <button id="tab-register" class="tab-btn">Registrar Usuario</button>
         </div>
-        <div id="result-container" class="hidden">
-            <h2>Resultado:</h2>
-            <p id="face-count">Rostros detectados: 0</p>
-            <img id="result-image" src="" alt="Imagen con detecciones">
+
+        <!-- Sección de Reconocimiento -->
+        <div id="recognize-section" class="tab-content active">
+            <h2>Reconocimiento en Tiempo Real</h2>
+            <div class="video-container">
+                <video id="video-recognize" width="640" height="480" autoplay muted></video>
+                <button id="capture-btn">📷 Capturar y Analizar</button>
+            </div>
+            <div id="result-container" class="hidden">
+                <h2>Resultado:</h2>
+                <p id="face-count">Rostros detectados: 0</p>
+                <p id="recognized-names"></p>
+                <img id="result-image" src="" alt="Imagen con detecciones">
+            </div>
         </div>
+
+        <!-- Sección de Registro -->
+        <div id="register-section" class="tab-content">
+            <h2>Registrar Nuevo Usuario</h2>
+            <div class="video-container">
+                <video id="video-register" width="640" height="480" autoplay muted></video>
+                <div class="register-form">
+                    <input type="text" id="nombre-input" placeholder="Nombre">
+                    <input type="text" id="apellido-input" placeholder="Apellido">
+                    <input type="text" id="dni-input" placeholder="DNI">
+                    <input type="email" id="email-input" placeholder="Email">
+                    <button id="register-btn">👤 Registrar Rostro</button>
+                </div>
+            </div>
+            <div id="register-feedback" class="hidden"></div>
+        </div>
+
         <div id="loading" class="hidden">Procesando... por favor espera.</div>
         <div id="error" class="hidden error"></div>
     </div>
