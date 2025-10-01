@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabRegister = document.getElementById('tab-register');
     const recognizeSection = document.getElementById('recognize-section');
     const registerSection = document.getElementById('register-section');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
 
     // Video
     const videoRecognize = document.getElementById('video-recognize');
@@ -39,22 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
             videoRecognize.srcObject = stream;
             videoRegister.srcObject = stream;
         } catch (err) {
-            showError('No se pudo acceder a la cámara: ' + err.message);
+            showError(`No se pudo acceder a la cámara: ${err.message}`);
         }
     }
 
-    tabRecognize.addEventListener('click', () => {
-        tabRecognize.classList.add('active');
-        tabRegister.classList.remove('active');
-        recognizeSection.classList.add('active');
-        registerSection.classList.remove('active');
-    });
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
 
-    tabRegister.addEventListener('click', () => {
-        tabRegister.classList.add('active');
-        tabRecognize.classList.remove('active');
-        registerSection.classList.add('active');
-        recognizeSection.classList.remove('active');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const target = document.getElementById(tab.id.replace('tab-', '') + '-section');
+            if (target) {
+                target.classList.add('active');
+            }
+        });
     });
 
     captureBtn.addEventListener('click', () => {
@@ -173,7 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showFeedback(message, type) {
         registerFeedback.textContent = message;
-        registerFeedback.className = `feedback ${type}`;
+        registerFeedback.className = 'feedback'; // Reset classes
+        registerFeedback.classList.add(type);
         registerFeedback.classList.remove('hidden');
     }
 

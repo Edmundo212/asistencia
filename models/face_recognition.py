@@ -4,9 +4,25 @@ import numpy as np
 import face_recognition
 from mysql.connector import Error
 from database.connection import get_connection
+from database.db import db
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+class KnownFaces(db.Model):
+    __tablename__ = "known_faces"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    apellido = db.Column(db.String(255), nullable=False)
+    dni = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    encoding = db.Column(db.LargeBinary, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<KnownFaces {self.nombre} {self.apellido} - {self.dni}>"
 
 def extract_face_encoding(image_path):
     """Extracts face encoding from an image."""
@@ -29,22 +45,18 @@ def extract_face_encoding(image_path):
 def save_user(nombre, apellido, dni, email, encoding):
     """Saves a new user to the database."""
     try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        sql = "INSERT INTO known_faces (nombre, apellido, dni, email, encoding) VALUES (%s, %s, %s, %s, %s)"
-        cursor.execute(sql, (nombre, apellido, dni, email, encoding.tobytes()))
-        conn.commit()
+        from database.db import db
+        user = KnownFaces(nombre=nombre, apellido=apellido, dni=dni, email=email, encoding=encoding.tobytes())
+        db.session.add(user)
+        db.session.commit()
         logger.info(f"User '{nombre} {apellido}' saved successfully.")
-        conn.close()
         return True, "User saved successfully."
-    except Error as e:
+    except Exception as e:
+        db.session.rollback()
         logger.error(f"Database error saving user '{nombre}': {e}")
         # Check for duplicate entry
-        if e.errno == 1062: # Duplicate entry
+        if "UNIQUE constraint failed" in str(e) or "Duplicate entry" in str(e):
             return False, "DNI o email ya existen en la base de datos."
-        return False, str(e)
-    except Exception as e:
-        logger.error(f"Unexpected error saving user '{nombre}': {e}")
         return False, str(e)
 
 def recognize_user(image_path):
@@ -55,32 +67,30 @@ def recognize_user(image_path):
             logger.warning(f"Could not get encoding from {image_path}")
             return None
 
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id, nombre, apellido, dni, email, encoding FROM known_faces")
-        users = cursor.fetchall()
-        conn.close()
+        from database.db import db
+        users = KnownFaces.query.all()
 
         logger.info(f"Comparing with {len(users)} users in the database.")
 
         for user in users:
             try:
-                db_encoding = np.frombuffer(user["encoding"], dtype=np.float64)
+                db_encoding = np.frombuffer(user.encoding, dtype=np.float64)
                 if face_recognition.compare_faces([db_encoding], input_encoding)[0]:
-                    logger.info(f"User recognized: {user['nombre']} {user['apellido']}")
-                    # Don't return the encoding itself
-                    user.pop('encoding', None)
-                    return user
+                    logger.info(f"User recognized: {user.nombre} {user.apellido}")
+                    return {
+                        'id': user.id,
+                        'nombre': user.nombre,
+                        'apellido': user.apellido,
+                        'dni': user.dni,
+                        'email': user.email
+                    }
             except (TypeError, ValueError) as e:
-                logger.warning(f"Could not process user {user['id']}: {e}")
+                logger.warning(f"Could not process user {user.id}: {e}")
                 continue
 
         logger.info(f"No match found for {image_path}")
         return None
 
-    except Error as e:
-        logger.error(f"Database error during recognition: {e}")
-        return None
     except Exception as e:
         logger.error(f"Unexpected error during recognition: {e}")
         return None

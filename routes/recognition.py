@@ -6,6 +6,7 @@ import numpy as np
 import os
 
 from models.utils import allowed_file, generate_unique_filename
+from models.attendance import mark_attendance
 from models.face_recognition import extract_face_encoding, save_user
 from config import UPLOAD_FOLDER, RESULT_FOLDER
 from database.connection import get_connection
@@ -15,20 +16,26 @@ recognition_bp = Blueprint('recognition', __name__)
 def get_known_users():
     """Fetches all known user data and encodings from the database."""
     try:
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id, nombre, apellido, dni, email, encoding FROM known_faces")
-        users = cursor.fetchall()
-        conn.close()
+        from models.face_recognition import KnownFaces
+        from database.db import db
+        users = KnownFaces.query.all()
         
+        known_users = []
         for user in users:
             try:
-                user['encoding'] = np.frombuffer(user["encoding"], dtype=np.float64)
+                encoding = np.frombuffer(user.encoding, dtype=np.float64)
+                known_users.append({
+                    'id': user.id,
+                    'nombre': user.nombre,
+                    'apellido': user.apellido,
+                    'dni': user.dni,
+                    'email': user.email,
+                    'encoding': encoding
+                })
             except (ValueError, TypeError):
-                user['encoding'] = None # Mark as invalid
+                continue  # Skip invalid encodings
         
-        # Filter out users with invalid encodings
-        return [u for u in users if u['encoding'] is not None]
+        return known_users
     except Exception as e:
         print(f"Error getting known users: {e}")
         return []
@@ -71,6 +78,9 @@ def recognize_face():
                 user_info = matched_user.copy()
                 user_info.pop('encoding', None) # Don't send encoding to frontend
                 recognized_users.append(user_info)
+
+                # Registrar asistencia
+                mark_attendance(matched_user['id'])
 
             # Draw rectangles and labels
             draw.rectangle(((left, top), (right, bottom)), outline=(0, 255, 0), width=2)

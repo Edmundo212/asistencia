@@ -5,4 +5,5 @@ numpy
 Pillow
 python-dotenv
 Flask-Cors
-mysql-connector-python
+Flask-SQLAlchemy
+pymysql

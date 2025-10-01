@@ -7,3 +7,11 @@ CREATE TABLE IF NOT EXISTS known_faces (
     encoding BLOB NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS attendance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'Present',
+    FOREIGN KEY (user_id) REFERENCES known_faces(id)
+);
