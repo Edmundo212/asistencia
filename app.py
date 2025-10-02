@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, session
 from flask_cors import CORS
 from config import SECRET_KEY, DEBUG
 from routes.recognition import recognition_bp
@@ -20,11 +20,18 @@ from routes.attendance_routes import attendance_bp
 
 app.register_blueprint(recognition_bp)
 app.register_blueprint(attendance_bp, url_prefix="/api")
+from routes.admin_routes import admin_bp
+app.register_blueprint(admin_bp, url_prefix="/api/admin")
 
 # Route to serve the index.html file
 @app.route('/')
 def index():
     return send_from_directory(app.static_folder, 'index.html')
+
+# Route to serve favicon.ico
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     with app.app_context():

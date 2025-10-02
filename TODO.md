@@ -1,36 +1,23 @@
-# TODO - Fix Database Connection Errors
+# TODO: Fix Errors in Facial Recognition Project
 
-## Plan de Corrección de Errores de Conexión
+## 1. Fix CORS Error for FontAwesome Script ✅
+- **File:** frontend/index.html
+- **Issue:** External FontAwesome script blocked by CORS policy.
+- **Fix:** Removed `crossorigin="anonymous"` attribute from the script tag to allow loading from local origin.
 
-### Pasos Completados:
-- [x] Paso 1: Actualizar Requisitos (mysql-connector-python agregado e instalado)
-- [x] Paso 2: Mejorar Módulo de Conexión (manejo de errores, logging y reintentos agregados)
-- [x] Paso 3: Inicialización de Base de Datos (base de datos creada exitosamente)
-- [x] Paso 4: Probar Conexión (pruebas CRUD exitosas)
-- [x] Paso 5: Actualizar Modelos del Backend (manejo de errores agregado)
+## 2. Fix 404 Error for favicon.ico ✅
+- **File:** frontend/favicon.ico
+- **Issue:** favicon.ico file missing in frontend folder.
+- **Fix:** Created a placeholder favicon.ico file in frontend folder.
 
-## ✅ CORRECCIÓN COMPLETADA
+## 3. Fix 401 Unauthorized Error for Admin API ✅
+- **Files:** frontend/index.html, frontend/scripts/app.js
+- **Issue:** Admin panel fetches /api/admin/known_faces without authentication.
+- **Fix:** 
+  - Added login form to admin section in HTML.
+  - Modified JS to check login status on admin tab switch, show login form if not logged in, handle login POST to /api/admin/login with credentials, then fetch users with credentials included in all admin API calls.
 
-Todos los errores de conexión han sido identificados y corregidos. El sistema ahora debería funcionar sin problemas de conexión.
-
-### Detalles de los Pasos:
-
-1. **Actualizar Requisitos**
-   - Agregar `mysql-connector-python` a `backend/requirements.txt`
-   - Instalar dependencias
-
-2. **Mejorar Módulo de Conexión**
-   - Agregar manejo de errores y logging a `database/connection.py`
-   - Crear función de prueba de conexión
-   - Agregar lógica de reintento para conexiones
-
-3. **Inicialización de Base de Datos**
-   - Asegurar que la base de datos "reconocimiento" se cree correctamente
-   - Verificar que las tablas se inicialicen
-
-4. **Probar Conexión**
-   - Crear script de prueba para verificar conexión
-   - Ejecutar pruebas de conexión
-
-5. **Actualizar Modelos del Backend**
-   - Agregar manejo de errores en `backend/models/face_recognition.py`
+## 4. Test Fixes
+- Run the Flask app and verify errors are resolved.
+- Check browser console for any remaining issues.
+- Default admin credentials: username 'admin', password 'password'.

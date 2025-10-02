@@ -12,3 +12,7 @@ os.makedirs(RESULT_FOLDER, exist_ok=True)
 # Configuración Flask
 SECRET_KEY = os.getenv('SECRET_KEY', 'supersecretkey')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
+
+# Credenciales de administrador (única cuenta)
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'Edgar Jhon')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '12345')
